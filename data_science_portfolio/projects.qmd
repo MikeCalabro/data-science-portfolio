@@ -1,0 +1,128 @@
+---
+title: "Mike's Projects"
+execute: 
+  echo: FALSE
+  warning: FALSE
+  message: FALSE
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(scales)
+```
+
+<br>
+
+::: columns
+::: {.column width="40%"}
+```{r}
+#| fig-height: 6
+
+pbp_22 <- readRDS("~/Documents/RStudio/data_science_portfolio/data/nfl_22.rds")
+
+pbp_22 %>%
+  filter(play_type == "run") %>%
+  ggplot(aes(x = yards_gained)) +
+  geom_histogram(fill = "white", color = "blue") +
+  labs(x = "Rushing Yards", y = "Count", title = "2022 NFL Rushing Yards") +
+  scale_y_continuous(labels = comma) +
+  scale_x_continuous(limits = c(-10, 50)) +
+  theme_minimal() +
+  theme(text = element_text(size = 20),
+        plot.background = element_rect(color = "black"),
+        plot.margin = margin(10,10,10,10),
+        axis.text.x = element_text(vjust = 3))
+
+```
+:::
+
+::: {.column width="5%"}
+:::
+
+::: {.column width="55%"}
+[**nflfastR Introduction**]{style="font-size: 26px"}
+
+*March 5, 2023*
+
+This project intorduces NFL play-by-play data acquired using the nflfastR package.
+
+[Check out the project here](nflfastR_intro.html)!
+:::
+:::
+
+<hr>
+
+::: columns
+::: {.column width="55%"}
+[**Motor Trend Cars Visualization**]{style="font-size: 26px"}
+
+*March 3, 2023*
+
+This project is a short investigation of the MTCars data set. The MTCars data set describes various features of 32 cars, such as miles per gallon, horsepower, and weight.
+
+[Check out the project here](mt_cars_viz.html)!
+:::
+
+::: {.column width="5%"}
+:::
+
+::: {.column width="40%"}
+```{r}
+#| fig-height: 6
+
+mtcars %>%
+  ggplot(aes(x = wt, y = mpg, color = factor(cyl))) +
+  geom_point() +
+  geom_smooth(aes(color = factor(cyl)),method = "lm", se = FALSE, alpha = 0.5) +
+  labs(color = "Cyl", title = "Car Fuel Economy", x = "Weight", y = "MPG") +
+  scale_y_continuous(limits = c(0,35)) +
+  theme_minimal() +
+  theme(text = element_text(size = 20),
+        plot.background = element_rect(color = "black"),
+        plot.margin = margin(10,10,10,10),
+        legend.position = c(0.8,0.76),
+        legend.box.background = element_rect(fill = "white", color = "black"),
+        axis.text.x = element_text(vjust = 3),
+        axis.text.y = element_text(hjust = 1.5))
+```
+:::
+:::
+
+<hr>
+
+::: columns
+::: {.column width="40%"}
+```{r}
+#| fig-height: 6
+
+iris %>%
+  clean_names() %>%
+  ggplot(aes(x = species, y = petal_width, color = species)) +
+  geom_boxplot() +
+  labs(title = "Iris Petal Comparisson", x = "Species", y = "Petal Width") +
+  scale_y_continuous(limits = c(0,2.7), n.breaks = 6) +
+  theme_minimal() +
+  theme(text = element_text(size = 20),
+        plot.background = element_rect(color = "black"),
+        plot.margin = margin(10,10,10,10),
+        legend.position = "none",
+        legend.box.background = element_rect(fill = "white", color = "black"),
+        axis.text.x = element_text(vjust = 2),
+        axis.text.y = element_text(hjust = 1.5))
+```
+:::
+
+::: {.column width="5%"}
+:::
+
+::: {.column width="55%"}
+[**Iris Visualization**]{style="font-size: 26px"}
+
+*February 28, 2023*
+
+This project is a short investigation of the Iris data set. The Iris data set describes 150 samples of 3 species of iris flower in terms of their sepal and petals.
+
+[Check out the project here](iris_viz.html)!
+:::
+:::

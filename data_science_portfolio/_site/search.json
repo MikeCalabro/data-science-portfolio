@@ -1,0 +1,142 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Michael Calabro",
+    "section": "",
+    "text": "I teach math and statistics at St. Sebastian’s in Needham, MA. I also serve as the school’s Head Varsity Baseball Coach, and as the Defensive Coordinator of the Varsity Football Team.\nRecently, I have rekindled my passion for data analysis. Specifically, I love uncovering insights from all sorts of data sets using the R programming language and the tidyverse framework. The purpose of this portfolio is to share my insights with whoever may stumble across it.\nThanks for checking it out… I hope you enjoy!"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About Mike",
+    "section": "",
+    "text": "Hey There! My name is Mike Calabro. I am an aspiring data scientist. If all goes well, this humble website will one day become my Data Science Portfolio! It ain’t much right now, but that’s okay :)"
+  },
+  {
+    "objectID": "projects.html",
+    "href": "projects.html",
+    "title": "Mike’s Projects",
+    "section": "",
+    "text": "nflfastR Introduction\nMarch 5, 2023\nThis project intorduces NFL play-by-play data acquired using the nflfastR package.\nCheck out the project here!\n\n\n\n\n\nMotor Trend Cars Visualization\nMarch 3, 2023\nThis project is a short investigation of the MTCars data set. The MTCars data set describes various features of 32 cars, such as miles per gallon, horsepower, and weight.\nCheck out the project here!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIris Visualization\nFebruary 28, 2023\nThis project is a short investigation of the Iris data set. The Iris data set describes 150 samples of 3 species of iris flower in terms of their sepal and petals.\nCheck out the project here!"
+  },
+  {
+    "objectID": "mt_cars_viz.html",
+    "href": "mt_cars_viz.html",
+    "title": "MT Cars Visualization",
+    "section": "",
+    "text": "The purpose of this project is to perform Exploratory Data Analysis on the mtcars data set. I am less curious about searching for / communicating insights, and more-so focused on making good-looking graphs and tables :)"
+  },
+  {
+    "objectID": "iris_viz.html",
+    "href": "iris_viz.html",
+    "title": "Iris Visualization",
+    "section": "",
+    "text": "The purpose of this project is to do a brief exploration of the iris data set. No crazy analysis, just making some tables and/or charts."
+  },
+  {
+    "objectID": "mt_cars_viz.html#the-data",
+    "href": "mt_cars_viz.html#the-data",
+    "title": "MT Cars Visualization",
+    "section": "The Data",
+    "text": "The Data\nFrom the RDocumentation: “The data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973--74 models).”\n\n\nlibrary(tidyverse)\nlibrary(reactable)\n\ndata <- mtcars %>% \n  as_tibble(rownames=\"model\")\n\ndata %>%\n  reactable(\n    defaultPageSize = 5, \n    striped = TRUE,\n    defaultColDef = colDef(minWidth = 55),\n    columns = list(model = colDef(minWidth = 165))\n  )"
+  },
+  {
+    "objectID": "mt_cars_viz.html#do-heavier-cars-get-less-mpg",
+    "href": "mt_cars_viz.html#do-heavier-cars-get-less-mpg",
+    "title": "MT Cars Visualization",
+    "section": "Do Heavier Cars Get Less MPG?",
+    "text": "Do Heavier Cars Get Less MPG?\n\ndata %>%\n  ggplot(aes(x = wt, y = mpg)) +\n  geom_point() +\n  labs(x = \"Weight (Tons)\", y = \"MPG\", title = \"Weight vs. Fuel Eficiency\") +\n  geom_smooth(method = \"loess\", se = FALSE) +\n  theme_minimal() +\n  theme(text = element_text(size = 18),\n        plot.title.position = \"plot\",\n        plot.title = element_text(hjust = 0.5, face = \"bold\"))\n\n\n\n\n\nWhat if we Incorporate Engine Cylinders?\n\nmtcars %>%\n  ggplot(aes(x = wt, y = mpg, color = factor(cyl))) +\n  geom_point() +\n  geom_smooth(aes(color = factor(cyl)),method = \"lm\", se = FALSE, alpha = 0.5) +\n  labs(color = \"Cyl\", title = \"Car Fuel Economy\", x = \"Weight\", y = \"MPG\") +\n  theme_minimal() +\n  theme(text = element_text(size = 18),\n        plot.title.position = \"plot\",\n        plot.title = element_text(hjust = 0.5, face = \"bold\"),\n        legend.position = c(0.8,0.76),\n        legend.box.background = element_rect(fill = \"white\", color = \"black\"),\n        axis.text.x = element_text(vjust = 3),\n        axis.text.y = element_text(hjust = 1.5))"
+  },
+  {
+    "objectID": "mt_cars_viz.html#comparing-brands",
+    "href": "mt_cars_viz.html#comparing-brands",
+    "title": "MT Cars Visualization",
+    "section": "Comparing Brands",
+    "text": "Comparing Brands\nIf we wanted to compare brands, a first good step would be to create separate columns for the make and model of a car.\n\nlibrary(stringr)\n\nmake_model <- data %>%\n  mutate(make = ifelse(\n                  is.na(str_locate(model, \" \")[,\"start\"]),\n                  model,\n                  str_sub(model, end = str_locate(model, \" \")[,\"start\"])\n                ))\n\nmake_model %>%\n  count(make) %>%\n  ggplot(aes(x = reorder(make, -n), y = n)) +\n  geom_col() +\n  labs(x = \"Brand\", y = \"Count\", title = \"Car Frequency in MTCars Data Set\") +\n  theme_minimal() +\n  theme(axis.text.x = element_text(angle = 70, hjust = 1),\n        plot.title.position = \"plot\",\n        plot.title = element_text(face = \"bold\", hjust = 0.5))"
+  },
+  {
+    "objectID": "mt_cars_viz.html#what-if-we-incorporate-engine-cylinders",
+    "href": "mt_cars_viz.html#what-if-we-incorporate-engine-cylinders",
+    "title": "MT Cars Visualization",
+    "section": "What if we Incorporate Engine Cylinders?",
+    "text": "What if we Incorporate Engine Cylinders?\n\nmtcars %>%\n  ggplot(aes(x = wt, y = mpg, color = factor(cyl))) +\n  geom_point() +\n  geom_smooth(aes(color = factor(cyl)),method = \"lm\", se = FALSE, alpha = 0.5) +\n  labs(color = \"Cyl\", title = \"Car Fuel Economy\", x = \"Weight\", y = \"MPG\") +\n  theme_minimal() +\n  theme(text = element_text(size = 18),\n        plot.title.position = \"plot\",\n        plot.title = element_text(hjust = 0.5, face = \"bold\"),\n        legend.position = c(0.8,0.76),\n        legend.box.background = element_rect(fill = \"white\", color = \"black\"),\n        axis.text.x = element_text(vjust = 3),\n        axis.text.y = element_text(hjust = 1.5))"
+  },
+  {
+    "objectID": "mt_cars_viz.html#are-horse-power-and-carborators-independent",
+    "href": "mt_cars_viz.html#are-horse-power-and-carborators-independent",
+    "title": "MT Cars Visualization",
+    "section": "Are Horse Power and Carborators Independent?",
+    "text": "Are Horse Power and Carborators Independent?\n\nmake_model %>%\n  ggplot(aes(x = factor(carb), y = hp, color = factor(carb))) +\n  geom_violin(draw_quantiles = 0.5) +\n  geom_jitter(width = 0.05, alpha = 0.8) +\n  labs(x = \"Carborators\", y = \"Horse Power\", title = \"Carbs to HP\") +\n  theme_minimal() +\n  theme(text = element_text(size = 18),\n        legend.position = \"none\",\n        plot.title.position = \"plot\",\n        plot.title = element_text(face = \"bold\", hjust = 0.5))"
+  },
+  {
+    "objectID": "iris_viz.html#the-data",
+    "href": "iris_viz.html#the-data",
+    "title": "Iris Visualization",
+    "section": "The Data",
+    "text": "The Data\nAccording to the RDocumentation: “This famous (Fisher’s or Anderson’s) iris data set gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica.”\n\nlibrary(tidyverse)\nlibrary(janitor)\nlibrary(reactable)\n\ndata <- iris %>%\n  clean_names()\n\ndata %>%\n  reactable(\n    defaultPageSize = 5, \n    striped = TRUE,\n    bordered = TRUE\n  )"
+  },
+  {
+    "objectID": "iris_shiny.html",
+    "href": "iris_shiny.html",
+    "title": "Iris Shiny Visualization",
+    "section": "",
+    "text": "library(shiny)\nlibrary(tidyverse)\n\n\nsliderInput(\"bins\", \"Number of bins:\", min = 1, max = 50, value = 30)\n\n\nNumber of bins:\n\n\n\nplotOutput(\"distPlot\")"
+  },
+  {
+    "objectID": "nflfastR_intro.html",
+    "href": "nflfastR_intro.html",
+    "title": "nflfastR Introduction",
+    "section": "",
+    "text": "The purpose of this project is to provide an introductory look at the nflfastR data set. I hope to showcase some of the advanced statistics that you can access when you have play-by-play data at your fingertips. I will also be showcasing some of the functionality of the tidyverse suite of packages.\n\nlibrary(tidyverse)\nlibrary(nflfastR)\nlibrary(reactable)"
+  },
+  {
+    "objectID": "nflfastR_intro.html#the-data",
+    "href": "nflfastR_intro.html#the-data",
+    "title": "nflfastR Introduction",
+    "section": "The Data",
+    "text": "The Data\nFor efficiency, the 2022 NFL play-by-play data has been pre-downloaded. The process of downloading the data is quite simple, but can take a few seconds.\nTo download 1 year of data:\npbp_22 <- load_pbp(2022)\nTo download data from this millennium:\npbp_00s <- load_pbp(2000:2022)\n\n\n\n\npbp_22 %>%\n  select(1:25) %>%\n  head() %>%\n  reactable(\n    striped = TRUE,\n    bordered = TRUE,\n    defaultColDef = colDef(minWidth = 180)\n  )\n\n\n\n\n\n\n\nThe table above is just a small sample of the data. In total, our pbp_22 data frame contains 50,147 rows, each representing a play from the NFL season, and 372 columns which contain variables describing each play. Below is a table which contains some more unique and condensed data.\n\npbp_22 %>%\n  filter(play_type == \"pass\") %>%\n  select(week, posteam, defteam, down, passer, receiver, yards_gained) %>%\n  reactable(\n    striped = TRUE,\n    bordered = TRUE,\n    defaultPageSize = 5\n  )\n\n\n\n\n\n\n\nOnce you have easy access to data like this, the possibilities are seemingly endless! Let’s go through some questions that we could ask, and see how easy they are to answer using nflfastR and the tidyverse."
+  },
+  {
+    "objectID": "nflfastR_intro.html#who-led-the-league-in-passing-yards-in-2022",
+    "href": "nflfastR_intro.html#who-led-the-league-in-passing-yards-in-2022",
+    "title": "nflfastR Introduction",
+    "section": "Who Led the League in Passing Yards in 2022",
+    "text": "Who Led the League in Passing Yards in 2022\n\npbp_22 %>%\n  filter(play_type == \"pass\",\n         season_type == \"REG\",\n         penalty == 0) %>%\n  group_by(passer) %>%\n  summarise(passing_yards = sum(yards_gained)) %>%\n  arrange(desc(passing_yards)) %>%\n  head(20) %>%\n  reactable(\n    striped = TRUE,\n    bordered = TRUE,\n    defaultPageSize = 5\n  )"
+  },
+  {
+    "objectID": "nflfastR_intro.html#who-led-the-league-in-passing-rushing-yards-in-2022",
+    "href": "nflfastR_intro.html#who-led-the-league-in-passing-rushing-yards-in-2022",
+    "title": "nflfastR Introduction",
+    "section": "Who Led the League in Passing + Rushing Yards in 2022?",
+    "text": "Who Led the League in Passing + Rushing Yards in 2022?\nNow this is a fun question. There are a couple different methods that come to mind when trying to answer this question, but I will opt for the method that does not include any “joins” first.\n\npbp_22 %>%\n  filter(play_type %in% c(\"pass\", \"run\"),\n         season_type == \"REG\",\n         penalty == 0) %>%\n  mutate(passer_rusher = ifelse(is.na(passer), rusher, passer)) %>%\n  group_by(passer_rusher, play_type) %>%\n  summarise(yards = sum(yards_gained)) %>%\n  spread(play_type, yards) %>%\n  filter(!is.na(pass)) %>%\n  mutate(total = pass + run) %>%\n  arrange(desc(total)) %>%\n  head(50) %>%\n  reactable(\n    striped = TRUE,\n    bordered = TRUE,\n    defaultPageSize = 5\n  )"
+  },
+  {
+    "objectID": "nflfastR_intro.html#who-led-the-league-in-passing-rushing-yards",
+    "href": "nflfastR_intro.html#who-led-the-league-in-passing-rushing-yards",
+    "title": "nflfastR Introduction",
+    "section": "Who Led the League in Passing + Rushing Yards",
+    "text": "Who Led the League in Passing + Rushing Yards\nNow this is a fun question. There are a couple different methods that come to mind when trying to answer this question, but I will opt for the method that does not include any “joins” first.\n\npbp_22 %>%\n  filter(play_type %in% c(\"pass\", \"run\"),\n         season_type == \"REG\",\n         penalty == 0) %>%\n  mutate(passer_rusher = ifelse(is.na(passer), rusher, passer)) %>%\n  group_by(passer_rusher, play_type) %>%\n  summarise(yards = sum(yards_gained)) %>%\n  spread(play_type, yards) %>%\n  filter(!is.na(pass)) %>%\n  mutate(total = pass + run) %>%\n  arrange(desc(total)) %>%\n  head(50) %>%\n  reactable(\n    striped = TRUE,\n    bordered = TRUE,\n    defaultPageSize = 5\n  )"
+  },
+  {
+    "objectID": "nflfastR_intro.html#who-was-the-best-first-down-runner",
+    "href": "nflfastR_intro.html#who-was-the-best-first-down-runner",
+    "title": "nflfastR Introduction",
+    "section": "Who Was the Best First Down Runner",
+    "text": "Who Was the Best First Down Runner\n\npbp_22 %>%\n  filter(play_type == \"run\",\n         down == 1) %>%\n  mutate(passer_rusher = ifelse(is.na(passer), rusher, passer)) %>%\n  group_by(passer_rusher) %>%\n  summarise(rushes = n(),\n            yards = sum(yards_gained),\n            ypc = sum(yards_gained) / n(),\n            med_yds = median(yards_gained)) %>%\n  filter(rushes > 100) %>%\n  arrange(desc(rushes)) %>%\n  head(80)\n\n# A tibble: 31 × 5\n   passer_rusher rushes yards   ypc med_yds\n   <chr>          <int> <dbl> <dbl>   <dbl>\n 1 D.Henry          226   968  4.28       3\n 2 J.Jacobs         205  1072  5.23       4\n 3 S.Barkley        193   807  4.18       3\n 4 N.Chubb          188   934  4.97       3\n 5 D.Cook           181   867  4.79       4\n 6 M.Sanders        175   797  4.55       4\n 7 N.Harris         164   649  3.96       3\n 8 J.Mixon          155   610  3.94       3\n 9 T.Etienne        154   792  5.14       3\n10 C.McCaffrey      150   740  4.93       3\n# … with 21 more rows"
+  },
+  {
+    "objectID": "nflfastR_intro.html#who-was-the-best-first-down-rb",
+    "href": "nflfastR_intro.html#who-was-the-best-first-down-rb",
+    "title": "nflfastR Introduction",
+    "section": "Who Was the Best First Down RB",
+    "text": "Who Was the Best First Down RB\n\npbp_22 %>%\n  filter(play_type == \"run\",\n         down == 1,\n         !is.na(rusher)) %>%\n  group_by(rusher) %>%\n  summarise(rushes = n(),\n            yards = sum(yards_gained),\n            ypc = sum(yards_gained) / n(),\n            sd_yds = sd(yards_gained)) %>%\n  filter(rushes > 100) %>%\n  arrange(desc(ypc)) %>%\n  ggplot(aes(y = reorder(rusher, ypc), x = ypc)) +\n  geom_pointrange(aes(xmin = ypc - sd_yds, xmax = ypc + sd_yds)) +\n  labs(x = \"Yards Per Carry\", y = \"Rusher\", title = \"First Down Rushing Leaders\") +\n  theme_minimal()\n\n\n\n\nAs you can start to see, when you have play-by-play data so easily accessible, the types of questions you can answer become more and more intricate! Future posts will serve to answer more specific, detailed questions. But for now, thanks for checking this out!"
+  },
+  {
+    "objectID": "nflfastR_intro.html#who-had-the-most-1st-down-rushes",
+    "href": "nflfastR_intro.html#who-had-the-most-1st-down-rushes",
+    "title": "nflfastR Introduction",
+    "section": "Who Had the Most 1st Down Rushes",
+    "text": "Who Had the Most 1st Down Rushes\n\npbp_22 %>%\n  filter(play_type == \"run\",\n         down == 1) %>%\n  mutate(passer_rusher = ifelse(is.na(passer), rusher, passer)) %>%\n  group_by(passer_rusher) %>%\n  summarise(rushes = n(),\n            yards = sum(yards_gained),\n            ypc = round(sum(yards_gained) / n(), digits = 2),\n            med_yds = median(yards_gained)) %>%\n  filter(rushes > 100) %>%\n  arrange(desc(rushes)) %>%\n  head(80) %>%\n  reactable(\n    striped = TRUE,\n    bordered = TRUE,\n    defaultPageSize = 5\n  )"
+  }
+]

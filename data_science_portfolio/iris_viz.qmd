@@ -1,0 +1,31 @@
+---
+title: "Iris Visualization"
+author: "Mike Calabro"
+execute:
+  warning: FALSE
+  message: FALSE
+---
+
+## Purpose
+
+The purpose of this project is to do a brief exploration of the iris data set. No crazy analysis, just making some tables and/or charts.
+
+## The Data
+
+According to the RDocumentation: "This famous (Fisher's or Anderson's) iris data set gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are *Iris setosa*, *versicolor*, and *virginica*."
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(reactable)
+
+data <- iris %>%
+  clean_names()
+
+data %>%
+  reactable(
+    defaultPageSize = 5, 
+    striped = TRUE,
+    bordered = TRUE
+  )
+```

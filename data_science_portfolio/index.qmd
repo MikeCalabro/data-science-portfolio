@@ -1,0 +1,14 @@
+---
+title: "Michael Calabro"
+image: mike_coaching.jpeg
+about:
+  template: jolla
+  image-width: 11em
+  image-shape: round
+---
+
+I teach math and statistics at St. Sebastian's in Needham, MA. I also serve as the school's Head Varsity Baseball Coach, and as the Defensive Coordinator of the Varsity Football Team.
+
+Recently, I have rekindled my passion for data analysis. Specifically, I love uncovering insights from all sorts of data sets using the R programming language and the tidyverse framework. The purpose of this portfolio is to share my insights with whoever may stumble across it.
+
+Thanks for checking it out... I hope you enjoy!

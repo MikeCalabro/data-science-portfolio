@@ -1,0 +1,151 @@
+---
+title: "nflfastR Introduction"
+author: "Mike Calabro"
+execute:
+  warning: FALSE
+  message: FALSE
+  exho: TRUE
+---
+
+## Purpose
+
+The purpose of this project is to provide an introductory look at the nflfastR data set. I hope to showcase some of the advanced statistics that you can access when you have play-by-play data at your fingertips. I will also be showcasing some of the functionality of the tidyverse suite of packages.
+
+```{r}
+library(tidyverse)
+library(nflfastR)
+library(reactable)
+```
+
+## The Data
+
+For efficiency, the 2022 NFL play-by-play data has been pre-downloaded. The process of downloading the data is quite simple, but can take a few seconds.
+
+To download 1 year of data:
+
+`pbp_22 <- load_pbp(2022)`
+
+To download data from this millennium:
+
+`pbp_00s <- load_pbp(2000:2022)`
+
+```{r}
+#| echo: FALSE
+pbp_22 <- readRDS("~/Documents/RStudio/data_science_portfolio/data/nfl_22.rds")
+```
+
+```{r}
+pbp_22 %>%
+  select(1:25) %>%
+  head() %>%
+  reactable(
+    striped = TRUE,
+    bordered = TRUE,
+    defaultColDef = colDef(minWidth = 180)
+  )
+```
+
+<br>
+
+The table above is just a small sample of the data. In total, our pbp_22 data frame contains **50,147 rows**, each representing a play from the NFL season, and **372 columns** which contain variables describing each play. Below is a table which contains some more unique and condensed data.
+
+```{r}
+pbp_22 %>%
+  filter(play_type == "pass") %>%
+  select(week, posteam, defteam, down, passer, receiver, yards_gained) %>%
+  reactable(
+    striped = TRUE,
+    bordered = TRUE,
+    defaultPageSize = 5
+  )
+```
+
+<br>
+
+Once you have easy access to data like this, the possibilities are seemingly endless! Let's go through some questions that we could ask, and see how easy they are to answer using nflfastR and the tidyverse.
+
+## Who Led the League in Passing Yards in 2022
+
+```{r}
+pbp_22 %>%
+  filter(play_type == "pass",
+         season_type == "REG",
+         penalty == 0) %>%
+  group_by(passer) %>%
+  summarise(passing_yards = sum(yards_gained)) %>%
+  arrange(desc(passing_yards)) %>%
+  head(20) %>%
+  reactable(
+    striped = TRUE,
+    bordered = TRUE,
+    defaultPageSize = 5
+  )
+```
+
+## Who Led the League in Passing + Rushing Yards
+
+Now this is a fun question. There are a couple different methods that come to mind when trying to answer this question, but I will opt for the method that does not include any "joins" first.
+
+```{r}
+pbp_22 %>%
+  filter(play_type %in% c("pass", "run"),
+         season_type == "REG",
+         penalty == 0) %>%
+  mutate(passer_rusher = ifelse(is.na(passer), rusher, passer)) %>%
+  group_by(passer_rusher, play_type) %>%
+  summarise(yards = sum(yards_gained)) %>%
+  spread(play_type, yards) %>%
+  filter(!is.na(pass)) %>%
+  mutate(total = pass + run) %>%
+  arrange(desc(total)) %>%
+  head(50) %>%
+  reactable(
+    striped = TRUE,
+    bordered = TRUE,
+    defaultPageSize = 5
+  )
+```
+
+## Who Had the Most 1st Down Rushes
+
+```{r}
+pbp_22 %>%
+  filter(play_type == "run",
+         down == 1) %>%
+  mutate(passer_rusher = ifelse(is.na(passer), rusher, passer)) %>%
+  group_by(passer_rusher) %>%
+  summarise(rushes = n(),
+            yards = sum(yards_gained),
+            ypc = round(sum(yards_gained) / n(), digits = 2),
+            med_yds = median(yards_gained)) %>%
+  filter(rushes > 100) %>%
+  arrange(desc(rushes)) %>%
+  head(80) %>%
+  reactable(
+    striped = TRUE,
+    bordered = TRUE,
+    defaultPageSize = 5
+  )
+```
+
+## Who Was the Best First Down RB
+
+```{r}
+pbp_22 %>%
+  filter(play_type == "run",
+         down == 1,
+         !is.na(rusher)) %>%
+  group_by(rusher) %>%
+  summarise(rushes = n(),
+            yards = sum(yards_gained),
+            ypc = sum(yards_gained) / n(),
+            sd_yds = sd(yards_gained)) %>%
+  filter(rushes > 100) %>%
+  arrange(desc(ypc)) %>%
+  ggplot(aes(y = reorder(rusher, ypc), x = ypc)) +
+  geom_pointrange(aes(xmin = ypc - sd_yds, xmax = ypc + sd_yds)) +
+  labs(x = "Yards Per Carry", y = "Rusher", title = "First Down Rushing Leaders") +
+  theme_minimal()
+```
+
+As you can start to see, when you have play-by-play data so easily accessible, the types of questions you can answer become more and more intricate! Future posts will serve to answer more specific, detailed questions. But for now, thanks for checking this out!

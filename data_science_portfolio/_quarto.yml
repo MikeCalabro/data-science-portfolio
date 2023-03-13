@@ -1,0 +1,25 @@
+project:
+  type: website
+
+website:
+  title: "Mike's Models"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: projects.qmd
+        text: Projects
+    right: 
+      - icon: linkedin
+        href: https://www.linkedin.com/in/michael-calabro-5a3461159/
+      - icon: github
+        href: https://github.com/MikeCalabro
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+
